@@ -2,9 +2,6 @@
 # Exit on error
 set -o errexit
 
-# Change to the project directory
-cd laundralink
-
 # Install dependencies
 pip install -r requirements.txt
 
