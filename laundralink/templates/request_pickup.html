@@ -1,0 +1,72 @@
+<!-- templates/request_pickup.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Request Laundry Pickup</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Your personal QR code: <strong>{{ student.qr_code }}</strong>. Make sure this is visible on your laundry bag.
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Special Instructions (Optional)</label>
+                        <textarea name="notes" class="form-control" rows="3" placeholder="Any special washing instructions?"></textarea>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i> Submit Pickup Request
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">How it Works</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="bg-light rounded-circle p-3 mx-auto mb-2" style="width: 80px; height: 80px;">
+                            <i class="fas fa-qrcode fa-2x text-primary"></i>
+                        </div>
+                        <h6>1. QR Tag</h6>
+                        <p class="small">Use your personal QR code on laundry bag</p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="bg-light rounded-circle p-3 mx-auto mb-2" style="width: 80px; height: 80px;">
+                            <i class="fas fa-truck fa-2x text-primary"></i>
+                        </div>
+                        <h6>2. Pickup</h6>
+                        <p class="small">Staff scans QR during pickup</p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="bg-light rounded-circle p-3 mx-auto mb-2" style="width: 80px; height: 80px;">
+                            <i class="fas fa-sync fa-2x text-primary"></i>
+                        </div>
+                        <h6>3. Processing</h6>
+                        <p class="small">Track status in real-time</p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="bg-light rounded-circle p-3 mx-auto mb-2" style="width: 80px; height: 80px;">
+                            <i class="fas fa-bell fa-2x text-primary"></i>
+                        </div>
+                        <h6>4. Notification</h6>
+                        <p class="small">Get notified when ready</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

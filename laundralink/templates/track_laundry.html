@@ -1,0 +1,58 @@
+<!-- templates/track_laundry.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Track Your Laundry</h2>
+    <a href="{% url 'request_pickup' %}" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i> New Request
+    </a>
+</div>
+
+{% if laundry_bags %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Your Laundry History</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>QR Code</th>
+                        <th>Status</th>
+                        <th>Request Date</th>
+                        <th>Pickup Date</th>
+                        <th>Ready Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bag in laundry_bags %}
+                    <tr>
+                        <td><strong>{{ bag.qr_code }}</strong></td>
+                        <td>
+                            <span class="status-badge status-{{ bag.status }}">
+                                {{ bag.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ bag.request_date|date:"M d, Y H:i" }}</td>
+                        <td>{{ bag.pickup_date|date:"M d, Y H:i"|default:"-" }}</td>
+                        <td>{{ bag.ready_date|date:"M d, Y H:i"|default:"-" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="card">
+    <div class="card-body text-center py-5">
+        <i class="fas fa-tshirt fa-4x text-muted mb-3"></i>
+        <h4 class="text-muted">No laundry requests yet</h4>
+        <p class="text-muted">Start by requesting your first laundry pickup</p>
+        <a href="{% url 'request_pickup' %}" class="btn btn-primary">Request Pickup</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

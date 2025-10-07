@@ -1,0 +1,102 @@
+<!-- templates/search_lost_items.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Search Lost Items</h2>
+    <a href="{% url 'lost_found' %}" class="btn btn-outline-primary">
+        <i class="fas fa-arrow-left me-1"></i> Back to Lost & Found
+    </a>
+</div>
+
+<!-- Search Form -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Search Filters</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Search Text</label>
+                <input type="text" name="q" class="form-control" value="{{ query }}" placeholder="Enter description or location...">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Category</label>
+                <select name="category" class="form-select">
+                    <option value="">All Categories</option>
+                    <option value="clothing" {% if category == 'clothing' %}selected{% endif %}>Clothing</option>
+                    <option value="accessory" {% if category == 'accessory' %}selected{% endif %}>Accessory</option>
+                    <option value="electronics" {% if category == 'electronics' %}selected{% endif %}>Electronics</option>
+                    <option value="documents" {% if category == 'documents' %}selected{% endif %}>Documents</option>
+                    <option value="other" {% if category == 'other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Color</label>
+                <select name="color" class="form-select">
+                    <option value="">All Colors</option>
+                    <option value="red" {% if color == 'red' %}selected{% endif %}>Red</option>
+                    <option value="blue" {% if color == 'blue' %}selected{% endif %}>Blue</option>
+                    <option value="green" {% if color == 'green' %}selected{% endif %}>Green</option>
+                    <option value="yellow" {% if color == 'yellow' %}selected{% endif %}>Yellow</option>
+                    <option value="black" {% if color == 'black' %}selected{% endif %}>Black</option>
+                    <option value="white" {% if color == 'white' %}selected{% endif %}>White</option>
+                    <option value="gray" {% if color == 'gray' %}selected{% endif %}>Gray</option>
+                    <option value="brown" {% if color == 'brown' %}selected{% endif %}>Brown</option>
+                    <option value="pink" {% if color == 'pink' %}selected{% endif %}>Pink</option>
+                    <option value="purple" {% if color == 'purple' %}selected{% endif %}>Purple</option>
+                    <option value="orange" {% if color == 'orange' %}selected{% endif %}>Orange</option>
+                    <option value="multi" {% if color == 'multi' %}selected{% endif %}>Multi-colored</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search me-1"></i> Search
+                </button>
+                <a href="{% url 'search_lost_items' %}" class="btn btn-outline-secondary">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Search Results -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            Search Results 
+            {% if lost_items %}<span class="badge bg-primary">{{ lost_items.count }} items found</span>{% endif %}
+        </h5>
+    </div>
+    <div class="card-body">
+        {% if lost_items %}
+            <div class="row">
+                {% for item in lost_items %}
+                <div class="col-md-6 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge bg-primary">{{ item.get_category_display }}</span>
+                                <span class="badge bg-secondary">{{ item.get_color_display }}</span>
+                            </div>
+                            <h6 class="card-title">{{ item.description }}</h6>
+                            <p class="card-text small text-muted">
+                                <i class="fas fa-map-marker-alt me-1"></i> Found in: {{ item.location_found }}<br>
+                                <i class="fas fa-clock me-1"></i> {{ item.date_found|date:"M d, Y" }}<br>
+                                <i class="fas fa-user me-1"></i> Reported by: {{ item.found_by.username }}
+                            </p>
+                            <a href="{% url 'claim_item' item.id %}" class="btn btn-outline-primary btn-sm">Claim This Item</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">No items found</h5>
+                <p class="text-muted">Try adjusting your search criteria or check back later.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

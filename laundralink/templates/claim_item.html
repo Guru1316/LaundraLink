@@ -1,0 +1,62 @@
+<!-- templates/claim_item.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">Claim Lost Item</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Please verify that this item belongs to you before claiming it.
+                </div>
+
+                <!-- Item Details -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Item Details</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Category:</strong> {{ item.get_category_display }}</p>
+                                <p><strong>Color:</strong> {{ item.get_color_display }}</p>
+                                <p><strong>Found Location:</strong> {{ item.location_found }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Date Found:</strong> {{ item.date_found|date:"M d, Y H:i" }}</p>
+                                <p><strong>Reported by:</strong> {{ item.found_by.username }}</p>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <strong>Description:</strong>
+                            <p class="mb-0">{{ item.description }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Claim Form -->
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Verification Details</strong></label>
+                        <textarea class="form-control" rows="3" placeholder="Please provide any additional details to verify this is your item (e.g., specific identifying marks, when you lost it, etc.)"></textarea>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Important:</strong> By claiming this item, you confirm it belongs to you. 
+                        False claims may result in account penalties.
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'search_lost_items' %}" class="btn btn-outline-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Confirm Claim</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

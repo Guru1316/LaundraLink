@@ -1,0 +1,187 @@
+<!-- templates/staff_dashboard.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Staff Dashboard</h2>
+    <div class="btn-group">
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-1"></i> Back to User Dashboard
+        </a>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>{{ total_bags }}</h4>
+                        <p class="mb-0">Total Bags</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-tshirt fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>{{ pending_pickup }}</h4>
+                        <p class="mb-0">Pending Pickup</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-clock fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>{{ ready_for_delivery }}</h4>
+                        <p class="mb-0">Ready for Delivery</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-bell fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>{{ total_lost_items }}</h4>
+                        <p class="mb-0">Lost Items</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-search fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <!-- Laundry Management -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Laundry Management</h5>
+            </div>
+            <div class="card-body">
+                {% if laundry_bags %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>QR Code</th>
+                                <th>Student ID</th>
+                                <th>Status</th>
+                                <th>Request Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bag in laundry_bags %}
+                            <tr>
+                                <td><strong>{{ bag.qr_code }}</strong></td>
+                                <td>{{ bag.student.student_id }}</td>
+                                <td>
+                                    <span class="status-badge status-{{ bag.status }}">
+                                        {{ bag.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>{{ bag.request_date|date:"M d, Y H:i" }}</td>
+                                <td>
+                                    <form method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="bag_id" value="{{ bag.id }}">
+                                        <input type="hidden" name="update_status" value="true">
+                                        <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                            <option value="requested" {% if bag.status == 'requested' %}selected{% endif %}>Requested</option>
+                                            <option value="picked_up" {% if bag.status == 'picked_up' %}selected{% endif %}>Picked Up</option>
+                                            <option value="washing" {% if bag.status == 'washing' %}selected{% endif %}>Washing</option>
+                                            <option value="drying" {% if bag.status == 'drying' %}selected{% endif %}>Drying</option>
+                                            <option value="ready" {% if bag.status == 'ready' %}selected{% endif %}>Ready</option>
+                                            <option value="delivered" {% if bag.status == 'delivered' %}selected{% endif %}>Delivered</option>
+                                        </select>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-tshirt fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No laundry requests yet.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <!-- Lost Items -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Recent Lost Items</h5>
+            </div>
+            <div class="card-body">
+                {% if lost_items %}
+                    {% for item in lost_items|slice:":5" %}
+                    <div class="border-bottom pb-2 mb-2">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <span class="badge bg-primary">{{ item.get_category_display }}</span>
+                            <span class="badge bg-secondary">{{ item.get_color_display }}</span>
+                        </div>
+                        <p class="mb-1 small">{{ item.description|truncatewords:8 }}</p>
+                        <small class="text-muted">
+                            <i class="fas fa-map-marker-alt me-1"></i> {{ item.location_found }}
+                        </small>
+                    </div>
+                    {% endfor %}
+                    <a href="{% url 'lost_found' %}" class="btn btn-outline-primary btn-sm w-100 mt-2">View All</a>
+                {% else %}
+                    <div class="text-center py-3">
+                        <i class="fas fa-search fa-2x text-muted mb-2"></i>
+                        <p class="text-muted small">No lost items reported</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'admin:index' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-cog me-2"></i> Admin Panel
+                    </a>
+                    <a href="{% url 'lost_found' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-search me-2"></i> Lost & Found
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

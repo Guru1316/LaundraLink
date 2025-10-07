@@ -1,0 +1,141 @@
+<!-- templates/lost_found.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Lost & Found</h2>
+            <a href="{% url 'search_lost_items' %}" class="btn btn-outline-primary">
+                <i class="fas fa-search me-1"></i> Search Items
+            </a>
+        </div>
+
+        <!-- Report Found Item -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Report Found Item</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Category</label>
+                            <select name="category" class="form-select" required>
+                                <option value="">Select Category</option>
+                                <option value="clothing">Clothing</option>
+                                <option value="accessory">Accessory</option>
+                                <option value="electronics">Electronics</option>
+                                <option value="documents">Documents</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Color</label>
+                            <select name="color" class="form-select" required>
+                                <option value="">Select Color</option>
+                                <option value="red">Red</option>
+                                <option value="blue">Blue</option>
+                                <option value="green">Green</option>
+                                <option value="yellow">Yellow</option>
+                                <option value="black">Black</option>
+                                <option value="white">White</option>
+                                <option value="gray">Gray</option>
+                                <option value="brown">Brown</option>
+                                <option value="pink">Pink</option>
+                                <option value="purple">Purple</option>
+                                <option value="orange">Orange</option>
+                                <option value="multi">Multi-colored</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea name="description" class="form-control" rows="3" placeholder="Describe the item in detail..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Where was it found?</label>
+                        <input type="text" name="location_found" class="form-control" placeholder="e.g., Laundry Room, Common Area, etc." required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Report Found Item</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Recent Found Items -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Recently Found Items</h5>
+            </div>
+            <div class="card-body">
+                {% if lost_items %}
+                    <div class="row">
+                        {% for item in lost_items %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <span class="badge bg-primary">{{ item.get_category_display }}</span>
+                                        <span class="badge bg-secondary">{{ item.get_color_display }}</span>
+                                    </div>
+                                    <h6 class="card-title">{{ item.description|truncatewords:10 }}</h6>
+                                    <p class="card-text small text-muted">
+                                        <i class="fas fa-map-marker-alt me-1"></i> Found in: {{ item.location_found }}<br>
+                                        <i class="fas fa-clock me-1"></i> {{ item.date_found|date:"M d, Y" }}
+                                    </p>
+                                    <a href="{% url 'claim_item' item.id %}" class="btn btn-outline-primary btn-sm">Claim This Item</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No lost items reported yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <!-- Quick Stats -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Lost & Found Stats</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Total Items Found</span>
+                    <strong>{{ lost_items.count }}</strong>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Items Claimed</span>
+                    <strong>0</strong>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>Your Claims</span>
+                    <strong>0</strong>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tips -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Tips</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled small">
+                    <li class="mb-2"><i class="fas fa-lightbulb text-warning me-2"></i> Be specific in your description</li>
+                    <li class="mb-2"><i class="fas fa-lightbulb text-warning me-2"></i> Include unique identifying features</li>
+                    <li class="mb-2"><i class="fas fa-lightbulb text-warning me-2"></i> Check regularly for your lost items</li>
+                    <li><i class="fas fa-lightbulb text-warning me-2"></i> Report found items immediately</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

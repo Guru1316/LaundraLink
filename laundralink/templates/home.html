@@ -1,0 +1,63 @@
+<!-- templates/home.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row align-items-center min-vh-75">
+    <div class="col-lg-6">
+        <h1 class="display-4 fw-bold text-primary">Welcome to LaundraLink</h1>
+        <p class="lead mb-4">The smart laundry management system for hostels and student housing. Track your laundry in real-time, find lost items, and enjoy a seamless laundry experience.</p>
+        
+        <div class="row mb-4">
+            <div class="col-md-6 mb-3">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-qrcode fa-2x text-primary me-3"></i>
+                    <div>
+                        <h5 class="mb-1">QR Code Tracking</h5>
+                        <p class="mb-0 text-muted">Real-time laundry status updates</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-search fa-2x text-primary me-3"></i>
+                    <div>
+                        <h5 class="mb-1">Smart Lost & Found</h5>
+                        <p class="mb-0 text-muted">Find your misplaced items quickly</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-bell fa-2x text-primary me-3"></i>
+                    <div>
+                        <h5 class="mb-1">Instant Notifications</h5>
+                        <p class="mb-0 text-muted">Get alerts for status changes</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-wallet fa-2x text-primary me-3"></i>
+                    <div>
+                        <h5 class="mb-1">Digital Payments</h5>
+                        <p class="mb-0 text-muted">Secure and convenient payments</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg px-4 me-md-2">Go to Dashboard</a>
+            {% else %}
+                <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4 me-md-2">Get Started</a>
+                <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg px-4">Login</a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="col-lg-6 text-center">
+        <img src="https://via.placeholder.com/500x400/4361ee/ffffff?text=LaundraLink" class="img-fluid rounded shadow" alt="LaundraLink App">
+    </div>
+</div>
+{% endblock %}
